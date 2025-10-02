@@ -65,6 +65,86 @@ class SearchResponse(BaseModel):
     error: Optional[str] = None
 
 
+# Photography Models
+class Photo(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    category: str  # portrait, wedding, landscape, commercial
+    imageData: str  # base64 encoded
+    description: str = ""
+    featured: bool = False
+    order: int = 0
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class PhotoCreate(BaseModel):
+    title: str
+    category: str
+    imageData: str
+    description: str = ""
+    featured: bool = False
+    order: int = 0
+
+
+class PhotoUpdate(BaseModel):
+    title: Optional[str] = None
+    category: Optional[str] = None
+    imageData: Optional[str] = None
+    description: Optional[str] = None
+    featured: Optional[bool] = None
+    order: Optional[int] = None
+
+
+# Testimonial Models
+class Testimonial(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    clientName: str
+    testimonialText: str
+    rating: int  # 1-5
+    order: int = 0
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TestimonialCreate(BaseModel):
+    clientName: str
+    testimonialText: str
+    rating: int
+    order: int = 0
+
+
+# Contact Models
+class ContactInquiry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: str = ""
+    message: str
+    submittedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    status: str = "new"  # new, contacted, closed
+
+
+class ContactInquiryCreate(BaseModel):
+    name: str
+    email: str
+    phone: str = ""
+    message: str
+
+
+# About Models
+class AboutContent(BaseModel):
+    id: str = "about"
+    bioText: str
+    photographerName: str
+    tagline: str
+    updatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class AboutContentUpdate(BaseModel):
+    bioText: Optional[str] = None
+    photographerName: Optional[str] = None
+    tagline: Optional[str] = None
+
+
 def _ensure_db(request: Request):
     try:
         return request.app.state.db
@@ -234,6 +314,123 @@ async def get_agent_capabilities(request: Request):
     except Exception as exc:  # pragma: no cover - defensive
         logger.exception("Error getting capabilities")
         return {"success": False, "error": str(exc)}
+
+
+# Photography Endpoints
+@api_router.get("/photos", response_model=List[Photo])
+async def get_photos(request: Request, category: Optional[str] = None):
+    db = _ensure_db(request)
+    query = {"category": category} if category else {}
+    photos = await db.photos.find(query).sort("order", 1).to_list(1000)
+    return [Photo(**photo) for photo in photos]
+
+
+@api_router.post("/photos", response_model=Photo)
+async def create_photo(photo: PhotoCreate, request: Request):
+    db = _ensure_db(request)
+    photo_obj = Photo(**photo.model_dump())
+    await db.photos.insert_one(photo_obj.model_dump())
+    return photo_obj
+
+
+@api_router.put("/photos/{photo_id}", response_model=Photo)
+async def update_photo(photo_id: str, photo_update: PhotoUpdate, request: Request):
+    db = _ensure_db(request)
+    update_data = {k: v for k, v in photo_update.model_dump().items() if v is not None}
+
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    result = await db.photos.find_one_and_update(
+        {"id": photo_id},
+        {"$set": update_data},
+        return_document=True
+    )
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    return Photo(**result)
+
+
+@api_router.delete("/photos/{photo_id}")
+async def delete_photo(photo_id: str, request: Request):
+    db = _ensure_db(request)
+    result = await db.photos.delete_one({"id": photo_id})
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Photo not found")
+
+    return {"success": True, "message": "Photo deleted"}
+
+
+# Testimonial Endpoints
+@api_router.get("/testimonials", response_model=List[Testimonial])
+async def get_testimonials(request: Request):
+    db = _ensure_db(request)
+    testimonials = await db.testimonials.find().sort("order", 1).to_list(1000)
+    return [Testimonial(**testimonial) for testimonial in testimonials]
+
+
+@api_router.post("/testimonials", response_model=Testimonial)
+async def create_testimonial(testimonial: TestimonialCreate, request: Request):
+    db = _ensure_db(request)
+    testimonial_obj = Testimonial(**testimonial.model_dump())
+    await db.testimonials.insert_one(testimonial_obj.model_dump())
+    return testimonial_obj
+
+
+# Contact Endpoints
+@api_router.post("/contact", response_model=ContactInquiry)
+async def submit_contact_inquiry(inquiry: ContactInquiryCreate, request: Request):
+    db = _ensure_db(request)
+    inquiry_obj = ContactInquiry(**inquiry.model_dump())
+    await db.contact_inquiries.insert_one(inquiry_obj.model_dump())
+    return inquiry_obj
+
+
+@api_router.get("/contact/inquiries", response_model=List[ContactInquiry])
+async def get_contact_inquiries(request: Request):
+    db = _ensure_db(request)
+    inquiries = await db.contact_inquiries.find().sort("submittedAt", -1).to_list(1000)
+    return [ContactInquiry(**inquiry) for inquiry in inquiries]
+
+
+# About Endpoints
+@api_router.get("/about", response_model=AboutContent)
+async def get_about(request: Request):
+    db = _ensure_db(request)
+    about = await db.about.find_one({"id": "about"})
+
+    if not about:
+        # Return default content if none exists
+        return AboutContent(
+            bioText="Professional photographer capturing moments that matter.",
+            photographerName="Your Name",
+            tagline="Capturing Life's Beautiful Moments"
+        )
+
+    return AboutContent(**about)
+
+
+@api_router.put("/about", response_model=AboutContent)
+async def update_about(about_update: AboutContentUpdate, request: Request):
+    db = _ensure_db(request)
+    update_data = {k: v for k, v in about_update.model_dump().items() if v is not None}
+
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+
+    update_data["updatedAt"] = datetime.now(timezone.utc)
+
+    result = await db.about.find_one_and_update(
+        {"id": "about"},
+        {"$set": update_data},
+        upsert=True,
+        return_document=True
+    )
+
+    return AboutContent(**result)
 
 
 app.include_router(api_router)
