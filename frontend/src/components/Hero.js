@@ -22,8 +22,10 @@ const Hero = ({ photographerName, tagline, featuredPhoto }) => {
       </div>
 
       <div className={`hero-content ${isVisible ? 'visible' : ''}`}>
+        <div className="hero-brand">PhotoVision</div>
         <h1 className="hero-title">{photographerName}</h1>
         <p className="hero-tagline">{tagline}</p>
+        <p className="hero-subtitle">Elevating life's precious moments through the art of visual storytelling and creative perspective</p>
 
         <div className="scroll-indicator">
           <div className="scroll-arrow">

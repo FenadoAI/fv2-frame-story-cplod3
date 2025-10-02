@@ -49,7 +49,8 @@ const Gallery = ({ photos }) => {
   return (
     <section className="gallery-section" id="gallery">
       <div className="gallery-container">
-        <h2 className="gallery-title">Portfolio</h2>
+        <h2 className="gallery-title">Portfolio Gallery</h2>
+        <p className="gallery-subtitle">Explore our diverse collection of photographic works spanning various styles and subjects</p>
 
         <div className="category-filters">
           {categories.map((category) => (

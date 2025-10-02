@@ -56,7 +56,10 @@ const About = ({ about }) => {
         </div>
 
         <div className="about-content">
-          <h2 className="about-title">About</h2>
+          <h2 className="about-title">Crafting Visual Stories</h2>
+          <p className="about-description">
+            Every photograph is an opportunity to capture a moment that will never exist again. Let us help you preserve your special moments with artistry and care.
+          </p>
           <h3 className="about-name">{about?.photographerName || 'Your Name'}</h3>
           <p className="about-bio">
             {about?.bioText || 'Professional photographer capturing moments that matter. With years of experience and a passion for visual storytelling, I create images that resonate with emotion and authenticity.'}

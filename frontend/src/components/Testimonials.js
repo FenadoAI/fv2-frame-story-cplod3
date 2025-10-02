@@ -75,6 +75,7 @@ const Testimonials = ({ testimonials }) => {
     <section className="testimonials-section" id="testimonials" ref={sectionRef}>
       <div className={`testimonials-container ${isVisible ? 'visible' : ''}`}>
         <h2 className="testimonials-title">Client Testimonials</h2>
+        <p className="testimonials-subtitle">Hear from our clients about their experience and the impact our photography has made</p>
 
         <div
           className="testimonial-carousel"
@@ -88,16 +89,21 @@ const Testimonials = ({ testimonials }) => {
             <div className="quote-icon">"</div>
             <p className="testimonial-text">{currentTestimonial.testimonialText}</p>
             <div className="testimonial-author">
-              <p className="author-name">{currentTestimonial.clientName}</p>
-              <div className="rating">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`star ${i < currentTestimonial.rating ? 'filled' : ''}`}
-                  >
-                    ★
-                  </span>
-                ))}
+              <div className="author-avatar">
+                {currentTestimonial.clientName.charAt(0).toUpperCase()}
+              </div>
+              <div className="author-info">
+                <p className="author-name">{currentTestimonial.clientName}</p>
+                <div className="rating">
+                  {[...Array(5)].map((_, i) => (
+                    <span
+                      key={i}
+                      className={`star ${i < currentTestimonial.rating ? 'filled' : ''}`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -58,6 +58,17 @@
   transform: translateY(0);
 }
 
+.hero-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #e5e5e5;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
 .hero-title {
   font-family: 'Playfair Display', serif;
   font-size: 5rem;
@@ -76,6 +87,18 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 300;
+  color: #d4d4d4;
+  max-width: 700px;
+  line-height: 1.6;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  margin: 0 auto;
 }
 
 .scroll-indicator {

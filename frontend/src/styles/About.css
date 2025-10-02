@@ -47,22 +47,31 @@
 }
 
 .about-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #ebebeb;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.02em;
+}
+
+.about-description {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 300;
+  line-height: 1.6;
+  color: #a3a3a3;
+  margin: 0 0 3rem 0;
+}
+
+.about-name {
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #a3a3a3;
+  color: #8b7355;
   margin: 0 0 1rem 0;
-}
-
-.about-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 3rem;
-  font-weight: 400;
-  color: #ebebeb;
-  margin: 0 0 2rem 0;
-  letter-spacing: 0.02em;
 }
 
 .about-bio {
