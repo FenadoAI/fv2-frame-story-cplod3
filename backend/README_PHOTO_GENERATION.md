@@ -20,13 +20,14 @@ The script will:
    - **Landscape**: Mountain Landscape, Sunset Over Water
    - **Commercial**: Commercial Product Shot
 
-2. Add 3 testimonials from sample clients
-3. Set up the about content for "Alex Rivera"
+2. Generate photographer portrait for About section
+3. Add 3 testimonials from sample clients
+4. Set up the about content for "Alex Rivera" with portrait
 
 ## Generation Time
 
 - Each photo takes ~5-10 seconds to generate
-- Total time for 6 photos: ~1-2 minutes
+- Total time for 6 photos + 1 portrait: ~2-3 minutes
 - Images are stored as Google Cloud Storage URLs
 - All photos are photorealistic and professionally styled
 

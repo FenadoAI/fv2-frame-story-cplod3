@@ -136,6 +136,7 @@ class AboutContent(BaseModel):
     bioText: str
     photographerName: str
     tagline: str
+    portraitImage: str = ""  # URL or base64 for photographer portrait
     updatedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -143,6 +144,7 @@ class AboutContentUpdate(BaseModel):
     bioText: Optional[str] = None
     photographerName: Optional[str] = None
     tagline: Optional[str] = None
+    portraitImage: Optional[str] = None
 
 
 def _ensure_db(request: Request):
@@ -407,7 +409,8 @@ async def get_about(request: Request):
         return AboutContent(
             bioText="Professional photographer capturing moments that matter.",
             photographerName="Your Name",
-            tagline="Capturing Life's Beautiful Moments"
+            tagline="Capturing Life's Beautiful Moments",
+            portraitImage=""
         )
 
     return AboutContent(**about)

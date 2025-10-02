@@ -155,13 +155,30 @@ def seed_testimonials():
         except Exception as e:
             print(f"❌ Error creating testimonial: {str(e)}")
 
-def seed_about():
-    """Update about content."""
+async def seed_about():
+    """Update about content with portrait."""
     print("\n=== Seeding About Content ===")
+
+    # Generate portrait
+    print("Generating photographer portrait...")
+    config = AgentConfig()
+    image_agent = ImageAgent(config)
+
+    portrait_prompt = "Professional photographer portrait, middle-aged person with camera, warm friendly smile, professional studio lighting, neutral background, photorealistic headshot"
+    result = await image_agent.generate_image_structured(portrait_prompt)
+
+    portrait_url = ""
+    if result.success and result.image_url:
+        portrait_url = result.image_url
+        print(f"✅ Portrait generated: {portrait_url[:80]}...")
+    else:
+        print(f"⚠️  Portrait generation failed, using placeholder")
+
     about_data = {
         "photographerName": "Alex Rivera",
         "tagline": "Capturing Life's Beautiful Moments",
-        "bioText": "With over 10 years of experience in photography, I specialize in portraits, weddings, and landscape photography. My approach combines technical expertise with creative vision to create images that tell your story. Every photograph is an opportunity to capture something extraordinary, and I'm passionate about helping you preserve your most important moments."
+        "bioText": "With over 10 years of experience in photography, I specialize in portraits, weddings, and landscape photography. My approach combines technical expertise with creative vision to create images that tell your story. Every photograph is an opportunity to capture something extraordinary, and I'm passionate about helping you preserve your most important moments.",
+        "portraitImage": portrait_url
     }
 
     try:
@@ -190,7 +207,7 @@ async def main():
         # Seed data with AI-generated images
         await seed_photos_with_ai()
         seed_testimonials()
-        seed_about()
+        await seed_about()
 
         print("\n" + "="*50)
         print("🎉 SEEDING COMPLETE!")
